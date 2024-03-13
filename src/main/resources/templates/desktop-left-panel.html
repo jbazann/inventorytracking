@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <!--/*-->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>left-panel</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="../static/dist/css/index.css">
+        <!--*/-->
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <!--/*/<th-block data-th-fragment="left-panel">/*/-->
+            <div class="dlp-custom-height w-1/5 border-r-4 border-blue-950">
+                
+                <div id="dlp-filters-container" class="flex flex-col">    
+                    <input type="checkbox" id="dlp-filters" class="peer/filters hidden">
+                    <label for="dlp-filters" class="text-center select-none">Filters</label>
+                    <div id="dlp-filters-list" class="
+                    peer-[&:not(:checked)]/filters:overflow-hidden 
+                    peer-[&:not(:checked)]/filters:h-0">
+                        <ul>
+                            <li data-th-each="filter : ${dlp_filters}" class="flex">
+                                <input type="checkbox" id="dlp-sample-filter" data-th-id="${filter.id}" class="peer hidden">
+                                <label for="dlp-sample-filter" data-th-for="${filter.id}" data-th-text="${filter.displayText}"
+                                    class="peer-checked:bg-slate-600 select-none w-full">Filter 1</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        <!--/*/</th-block>/*/-->
+    </body>
+</html>

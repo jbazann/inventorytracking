@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <!--/*-->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>desktop-topbar</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="../styles/styles.css">
+        <!--*/-->
+    </head>
+    <body>
+        <!--/*/<th-block data-th-fragment="topbar">/*/-->
+            <div class="h-14 flex flex-row justify-between content-center flex-wrap p-4 border-b-2 border-blue-950 sticky overflow-visible top-0">
+                <div class="w-1/3 flex flex-row flex-nowrap justify-start">
+                    <h1>Brand</h1>
+                </div>
+                <div class="w-1/3">
+                    <search class="justify-between size-full">
+                        <form action="" class="flex flex-row flex-nowrap">
+                            <label for="search-main-input">ASD</label>
+                            <input type="search" name="placeholdername" id="search" placeholder="plhldr" class="w-full" />
+                            <button type="submit">Search</button>
+                        </form>
+                    </search>
+                </div>
+                <div class="w-1/3 flex flex-row flex-nowrap justify-end">
+                    <menu class="contents">
+                        <li>Inventory</li>
+                        <li>Something else</li>
+                        <li>Settings</li>
+                        <li>Logout</li>
+                    </menu>
+                </div>
+            </div>
+        <!--/*/</th-block>/*/-->
+    </body>
+</html>
