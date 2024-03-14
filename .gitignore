@@ -42,3 +42,6 @@ node
 webpack-manifest.json
 dist/
 
+### PostCSS ###
+postcss-manifest.json
+
