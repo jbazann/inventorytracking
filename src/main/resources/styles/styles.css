@@ -3,10 +3,20 @@
 @tailwind utilities;
 
 :root {
-    --topbar-height: 3.5rem
+    --topbar-height: 3.5rem;
+    --inventory-item-margin-x: 1%;
+    --inventory-item-margin-y: 1%;
+    --inventory-item-per-row: 4;
 }
 
-.dlp-custom-height {
+.dlp-height {
     height: calc(100dvh - var(--topbar-height));
 }
 
+.dmc-isi-margins {
+    margin: var(--inventory-item-margin-y) var(--inventory-item-margin-x);
+}
+
+.dmc-isi-width {
+    width: calc((100% - 2*var(--inventory-item-margin-x)*var(--inventory-item-per-row))/var(--inventory-item-per-row));
+}

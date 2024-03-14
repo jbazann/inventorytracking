@@ -15,9 +15,13 @@
     </head>
     <body>
         
-        <div data-th-id="topbar-container" data-th-replace="~{desktop-topbar :: topbar}"></div>
-        <div data-th-id="left-panel-container" data-th-replace="~{desktop-left-panel :: left-panel}"></div>
-        <div data-th-id="main-area-container" data-th-replace="~{}"></div>
+        <div class="flex flex-col w-dvw h-dvh">
+            <div data-th-id="topbar-container" data-th-replace="~{desktop-topbar :: topbar}"></div>
+            <div class="flex flex-row w-full dlp-height">
+                <div data-th-id="left-panel-container" data-th-replace="~{desktop-left-panel :: left-panel}"></div>
+                <div data-th-id="main-area-container" data-th-replace="~{desktop-inventory-panel :: inventory-panel}"></div>
+            </div>
+        </div>
         
         <script data-th-src="${script}"></script>
     </body>
