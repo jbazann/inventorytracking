@@ -8,12 +8,16 @@
     </head>
     <body>
         <!--/*/<th-block data-th-fragment="inventory-panel">/*/-->
-            <div id="dmc-inventory-container" class="flex flex-row flex-wrap content-start size-full box-border border-4 p-4 border-slate-600 overflow-y-scroll">
-                <div id="dmc-inventory-sample-item" data-th-id="${#strings.append('dmc-inventory-sample-item-',i)}"
-                    data-th-each="i : ${#numbers.sequence(0,40)}" 
-                    class="border-2 border-slate-600 rounded-2xl h-1/4 dmc-isi-width dmc-isi-margins">
-
-                </div>
+            <div id="dip-inventory-explorer" 
+                class="flex flex-row flex-wrap content-start size-full box-border border-4 p-4 
+                border-slate-600 overflow-y-scroll">
+                <ol class="contents">
+                    <li data-th-each="itemid : ${#numbers.sequence(0,40)}" 
+                        id="dip-inventory-sample-item" data-th-id="${#strings.append('dmc-inventory-item-',itemid)}"
+                        class="contents"
+                        data-th-insert="~{inventory-item :: inventory-item}">
+                    </li>
+                </ol>
             </div>
         <!--/*/</th-block>/*/-->
     </body>

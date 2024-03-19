@@ -10,14 +10,14 @@
         <title>Placeholder title</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="../static/dist/css/index.css" data-th-href="${stylesheet}">
         <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="../static/dist/css/index.css" data-th-href="${stylesheet}">
     </head>
     <body>
         
         <div class="flex flex-col w-dvw h-dvh">
             <div data-th-id="topbar-container" data-th-replace="~{desktop-topbar :: topbar}"></div>
-            <div class="flex flex-row w-full dlp-height">
+            <div class="flex flex-row w-full dlp-size">
                 <div data-th-id="left-panel-container" data-th-replace="~{desktop-left-panel :: left-panel}"></div>
                 <div data-th-id="main-area-container" data-th-replace="~{desktop-inventory-panel :: inventory-panel}"></div>
             </div>

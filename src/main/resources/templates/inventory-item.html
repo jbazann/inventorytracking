@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Item</title>
+</head>
+<body data-th-with="itemid = 'sample'">
+    <!--/*/<th-block data-th-fragment="inventory-item">/*/-->
+        <div class="flex flex-col border-2 border-slate-600 rounded-2xl aspect-video 
+            dip-i-item-width dip-i-item-margins overflow-hidden">
+            <h2 id="dip-isi-name" data-th-id="${#strings.append('dip-inventory-item-name-',itemid)}"
+                data-th-text="${#strings.append('ENCODED ITEM-NAME-',itemid)}"
+                class="text-center p-1 border-b">
+                ENCODED ITEM-NAME-SAMPLE
+            </h2>
+            <div class="flex flex-row h-full min-h-0">
+                <img src="https://api.time.com/wp-content/uploads/2019/08/caveman-spongebob-spongegar.png?w=828" alt="sample image"
+                    class="w-auto h-auto aspect-square" 
+                    data-th-if="${itemid} % 4 and ${itemid} % 7 ">
+            </div>
+            <h3 class="text-center p-1 border-t">
+                POSSIBLE FOOTER
+            </h3>
+        </div>
+    <!--/*/</th-block>/*/-->
+</body>
+</html>

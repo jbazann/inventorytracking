@@ -6,17 +6,22 @@
     --topbar-height: 3.5rem;
     --inventory-item-margin-x: 1%;
     --inventory-item-margin-y: 1%;
-    --inventory-item-per-row: 4;
+    --inventory-item-per-row: 3;
 }
 
-.dlp-height {
+.dtb-height {
+    height: var(--topbar-height);
+}
+
+.dlp-size {
     height: calc(100dvh - var(--topbar-height));
+    width: 30%
 }
 
-.dmc-isi-margins {
+.dip-i-item-margins {
     margin: var(--inventory-item-margin-y) var(--inventory-item-margin-x);
 }
 
-.dmc-isi-width {
+.dip-i-item-width {
     width: calc((100% - 2*var(--inventory-item-margin-x)*var(--inventory-item-per-row))/var(--inventory-item-per-row));
 }
