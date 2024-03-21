@@ -9,19 +9,19 @@
     --inventory-item-per-row: 3;
 }
 
-.dtb-height {
+.topbar-height {
     height: var(--topbar-height);
 }
 
-.dlp-size {
+.lpanel-size {
     height: calc(100dvh - var(--topbar-height));
     width: 30%
 }
 
-.dip-i-item-margins {
+.inv-item-margins {
     margin: var(--inventory-item-margin-y) var(--inventory-item-margin-x);
 }
 
-.dip-i-item-width {
+.inv-item-width {
     width: calc((100% - 2*var(--inventory-item-margin-x)*var(--inventory-item-per-row))/var(--inventory-item-per-row));
 }

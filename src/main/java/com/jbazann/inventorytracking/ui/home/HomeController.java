@@ -22,9 +22,9 @@ public class HomeController {
         model.addAttribute("script", manifest.get("index.js"));
         model.addAttribute("stylesheet", manifest.getAt("styles.css","dist/css/"));
 
-        model.addAttribute("dlp_filters", List.of(
-            new Filter("dlp-sample-filter-one","Sample Filter 1"),
-            new Filter("dlp-sample-filter-two", "Sample Filter 2")
+        model.addAttribute("filters", List.of(
+            new Filter("sample-filter-one","Sample Filter 1"),
+            new Filter("sample-filter-two", "Sample Filter 2")
         ));
 
         return "index";

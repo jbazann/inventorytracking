@@ -8,8 +8,8 @@
 <body data-th-with="itemid = 'sample'">
     <!--/*/<th-block data-th-fragment="inventory-item">/*/-->
         <div class="flex flex-col border-2 border-slate-600 rounded-2xl aspect-video 
-            dip-i-item-width dip-i-item-margins overflow-hidden">
-            <h2 id="dip-isi-name" data-th-id="${#strings.append('dip-inventory-item-name-',itemid)}"
+            inv-item-width inv-item-margins overflow-hidden">
+            <h2 id="inventory-item-name-sample" data-th-id="${#strings.append('inventory-item-name-',itemid)}"
                 data-th-text="${#strings.append('ENCODED ITEM-NAME-',itemid)}"
                 class="text-center p-1 border-b">
                 ENCODED ITEM-NAME-SAMPLE

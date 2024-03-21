@@ -8,12 +8,12 @@
     </head>
     <body>
         <!--/*/<th-block data-th-fragment="inventory-panel">/*/-->
-            <div id="dip-inventory-explorer" 
+            <div id="inventory-panel" 
                 class="flex flex-row flex-wrap content-start size-full box-border border-4 p-4 
                 border-slate-600 overflow-y-scroll">
                 <ol class="contents">
                     <li data-th-each="itemid : ${#numbers.sequence(0,40)}" 
-                        id="dip-inventory-sample-item" data-th-id="${#strings.append('dmc-inventory-item-',itemid)}"
+                        id="inventory-item-sample" data-th-id="${#strings.append('inventory-item-',itemid)}"
                         class="contents"
                         data-th-insert="~{inventory-item :: inventory-item}">
                     </li>
