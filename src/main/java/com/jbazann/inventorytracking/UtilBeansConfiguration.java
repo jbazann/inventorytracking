@@ -1,4 +1,4 @@
-package com.jbazann.inventorytracking.ui;
+package com.jbazann.inventorytracking;
 
 import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.context.annotation.Bean;
