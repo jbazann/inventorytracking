@@ -15,11 +15,18 @@ import com.jbazann.inventorytracking.CommonExceptions;
 public record InventoryGroup(
     UUID id,
     String name,
+    GroupState state,
     List<InventoryPart> parts
 ) {
 
+    public enum GroupState {
+        TRACKING,
+        ISSUE,
+        DELIVERED
+    }
+
     public InventoryGroup(String name) {
-        this(UUID.randomUUID(),name,new LinkedList<InventoryPart>());
+        this(UUID.randomUUID(),name,GroupState.TRACKING,new LinkedList<InventoryPart>());
     }
 
     public InventoryGroup addPart(final InventoryPart p) {

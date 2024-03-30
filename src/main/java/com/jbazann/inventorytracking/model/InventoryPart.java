@@ -1,5 +1,6 @@
 package com.jbazann.inventorytracking.model;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.jbazann.inventorytracking.CommonExceptions;
@@ -11,7 +12,8 @@ public record InventoryPart(
     UUID id,
     String name,
     String encodedName,
-    PartState state
+    PartState state,
+    LocalDateTime recorded
 ) {
     
     public enum PartState{ 
@@ -23,11 +25,11 @@ public record InventoryPart(
     }
 
     public InventoryPart(String encodedName) {
-        this(UUID.randomUUID(),encodedName,encodedName,PartState.TRACKING);
+        this(UUID.randomUUID(),encodedName,encodedName,PartState.TRACKING,LocalDateTime.now());
     }
 
     public InventoryPart(String fullName, String encodedName) {
-        this(UUID.randomUUID(),fullName,encodedName,PartState.TRACKING);
+        this(UUID.randomUUID(),fullName,encodedName,PartState.TRACKING, LocalDateTime.now());
     }
 
     public boolean needsReplacement() {
@@ -38,7 +40,7 @@ public record InventoryPart(
         if(replacement == null) throw new IllegalArgumentException(CommonExceptions.nullArgument());
         if(!needsReplacement()) throw new RuntimeException("Not marked for replacement.");
         if(!replacement.canReplace(this)) throw new IllegalArgumentException("Uncompatible replacement.");
-        return new InventoryPart(id, name, encodedName, PartState.RETURNING);
+        return new InventoryPart(id, name, encodedName, PartState.RETURNING, LocalDateTime.now());
     }
 
     public boolean is(InventoryPart another) {

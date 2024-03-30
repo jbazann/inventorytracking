@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,11 @@ import com.jbazann.inventorytracking.model.InventoryPart.PartState;
 public class InventoryPartTests {
     final String validName = "Yes Es S FULL LENGTH NAME STRING 130u8!!!!#$%&/() and stuff";
     final String validEncodedName = "YES N4m#-LIK3-!848";
+    final LocalDateTime someTime = LocalDateTime.now();
+
+    private InventoryPart stateConstructor(InventoryPart.PartState state) {
+        return new InventoryPart(UUID.randomUUID(),validName,validEncodedName,state,someTime);
+    }
 
     @Test
     public void nonCanonicalConstructorTest() {
@@ -29,6 +35,7 @@ public class InventoryPartTests {
         assertNotNull(encodedOnly.id());
         assertNotNull(encodedOnly.encodedName());
         assertNotNull(encodedOnly.state());
+        assertNotNull(encodedOnly.recorded());
         assertTrue(encodedOnly.name().equals(validEncodedName));
 
         // Encoded and full name
@@ -37,18 +44,19 @@ public class InventoryPartTests {
         assertNotNull(encodedAndFullName.id());
         assertNotNull(encodedAndFullName.encodedName());
         assertNotNull(encodedAndFullName.state());
+        assertNotNull(encodedAndFullName.recorded());
         assertTrue(encodedAndFullName.name().equals(validName));
         assertTrue(encodedAndFullName.encodedName().equals(validEncodedName));
     }
 
     @Test
     public void needsReplacementTest() {
-        final InventoryPart tracking = new InventoryPart(UUID.randomUUID(),validName,validEncodedName,PartState.TRACKING);
-        final InventoryPart replacing = new InventoryPart(UUID.randomUUID(),validName,validEncodedName,PartState.REPLACING);
-        final InventoryPart returning = new InventoryPart(UUID.randomUUID(),validName,validEncodedName,PartState.RETURNING);
-        final InventoryPart discarded = new InventoryPart(UUID.randomUUID(),validName,validEncodedName,PartState.DISCARDED);
-        final InventoryPart delivered = new InventoryPart(UUID.randomUUID(),validName,validEncodedName,PartState.DELIVERED);
-        final InventoryPart randomlyNull = new InventoryPart(UUID.randomUUID(),validName,validEncodedName,null);
+        final InventoryPart tracking = stateConstructor(PartState.TRACKING);
+        final InventoryPart replacing = stateConstructor(PartState.REPLACING);
+        final InventoryPart returning = stateConstructor(PartState.RETURNING);
+        final InventoryPart discarded = stateConstructor(PartState.DISCARDED);
+        final InventoryPart delivered = stateConstructor(PartState.DELIVERED);
+        final InventoryPart randomlyNull = stateConstructor(null);
 
         assertFalse(randomlyNull.needsReplacement());
         assertFalse(tracking.needsReplacement());
@@ -60,7 +68,7 @@ public class InventoryPartTests {
 
     @Test
     public void replaceTest() {
-        final InventoryPart replacing = new InventoryPart(UUID.randomUUID(), validName, validEncodedName, PartState.REPLACING);
+        final InventoryPart replacing = stateConstructor(PartState.REPLACING);
         final InventoryPart happyPath = mock();
         when(happyPath.canReplace(replacing)).thenReturn(true);
 
@@ -80,16 +88,17 @@ public class InventoryPartTests {
         final InventoryPart partOne = new InventoryPart(validEncodedName);
         final InventoryPart partOneCopy = new InventoryPart(
             partOne.id(),partOne.name(),partOne.encodedName(),
-            PartState.TRACKING == partOne.state() ? PartState.REPLACING : PartState.TRACKING
+            PartState.TRACKING == partOne.state() ? PartState.REPLACING : PartState.TRACKING,//guarantee different state
+            someTime
         );
         final InventoryPart partOneWrongId = new InventoryPart(
-            UUID.randomUUID(), partOne.name(),partOne.encodedName(),partOne.state()
+            UUID.randomUUID(), partOne.name(),partOne.encodedName(),partOne.state(), partOne.recorded()
         );
         final InventoryPart partOneWrongName = new InventoryPart(
-            partOne.id(), partOne.name()+"XD",partOne.encodedName(),partOne.state()
+            partOne.id(), partOne.name()+"XD",partOne.encodedName(),partOne.state(), partOne.recorded()
         );
         final InventoryPart partOneWrongEncoded =  new InventoryPart(
-            partOne.id(), partOne.name(),partOne.encodedName()+";D",partOne.state()
+            partOne.id(), partOne.name(),partOne.encodedName()+";D",partOne.state(), partOne.recorded()
         );
 
         assertFalse(partOne.is(partOneWrongId));
@@ -108,10 +117,10 @@ public class InventoryPartTests {
     public void canReplaceTest() {
         final InventoryPart canReplace = new InventoryPart(validEncodedName);
         final InventoryPart cannotReplace = new InventoryPart(
-            canReplace.id(),canReplace.name(),canReplace.encodedName(),PartState.RETURNING
+            canReplace.id(),canReplace.name(),canReplace.encodedName(),PartState.RETURNING, someTime
         );
         final InventoryPart needsReplacement = new InventoryPart(
-            UUID.randomUUID(), validName, validEncodedName, PartState.REPLACING
+            UUID.randomUUID(), validName, validEncodedName, PartState.REPLACING, someTime
         );
 
         assertTrue(canReplace.canReplace(needsReplacement));
