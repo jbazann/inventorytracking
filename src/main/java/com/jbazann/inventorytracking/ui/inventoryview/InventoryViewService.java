@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jbazann.inventorytracking.db.repositories.InventoryGroupRepository;
-import com.jbazann.inventorytracking.db.repositories.InventoryPartRepository;
 import com.jbazann.inventorytracking.model.InventoryGroup;
 import com.jbazann.inventorytracking.model.InventoryPart;
 
@@ -16,15 +15,17 @@ public final class InventoryViewService {
     
     @Autowired
     private InventoryGroupRepository groupRepository;
-    @Autowired
-    private InventoryPartRepository partRepository;
 
     public List<InventoryViewItemDTO> getLatestAnyState(final int page, final int pageSize) {
+        if(page < 0) throw new IllegalArgumentException("page can't be less than zero.");
+        if(pageSize < 1) throw new IllegalArgumentException("pageSize can't be less than one");
         final List<InventoryGroup> latest = groupRepository.getLatestAnyState(page,pageSize);
         return dto(latest);
     }
 
     public List<InventoryViewItemDTO> getIssues(final int page, final int pageSize) {
+        if(page < 0) throw new IllegalArgumentException("page can't be less than zero.");
+        if(pageSize < 1) throw new IllegalArgumentException("pageSize can't be less than one");
         final List<InventoryGroup> issues = groupRepository.getIssues(page,pageSize);
         return dto(issues);
     } 
@@ -41,7 +42,9 @@ public final class InventoryViewService {
     }
 
     private InventoryViewItemDTO dto(final InventoryPart part) {
-        return new InventoryViewItemDTO(part.name(),
+        return new InventoryViewItemDTO(
+            part.id(),
+            part.name(),
             part.encodedName(),
             part.state().toString(), 
             false, 
@@ -52,6 +55,7 @@ public final class InventoryViewService {
 
     private InventoryViewItemDTO dto(final InventoryGroup group) {
         return new InventoryViewItemDTO(
+            group.id(),
             group.name(),
             null,
             group.state().toString(),
