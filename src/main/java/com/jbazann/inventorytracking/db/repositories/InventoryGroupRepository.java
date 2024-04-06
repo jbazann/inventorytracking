@@ -2,7 +2,7 @@ package com.jbazann.inventorytracking.db.repositories;
 
 import java.util.List;
 
-import com.jbazann.inventorytracking.model.InventoryGroup;
+import com.jbazann.inventorytracking.domain.InventoryGroup;
 
 public class InventoryGroupRepository {
 

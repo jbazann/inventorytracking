@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jbazann.inventorytracking.db.repositories.InventoryGroupRepository;
-import com.jbazann.inventorytracking.model.InventoryGroup;
-import com.jbazann.inventorytracking.model.InventoryPart;
+import com.jbazann.inventorytracking.domain.InventoryGroup;
+import com.jbazann.inventorytracking.domain.InventoryPart;
 
 @Service
 public final class InventoryViewService {

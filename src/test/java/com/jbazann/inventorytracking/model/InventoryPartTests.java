@@ -13,7 +13,8 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
-import com.jbazann.inventorytracking.model.InventoryPart.PartState;
+import com.jbazann.inventorytracking.domain.InventoryPart;
+import com.jbazann.inventorytracking.domain.InventoryPart.PartState;
 
 /**
  * Unit tests for {@link InventoryPart}.

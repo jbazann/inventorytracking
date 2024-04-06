@@ -10,6 +10,9 @@ import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.Test;
 
+import com.jbazann.inventorytracking.domain.InventoryGroup;
+import com.jbazann.inventorytracking.domain.InventoryPart;
+
 /**
  * Unit tests for {@link InventoryGroup}.
  */

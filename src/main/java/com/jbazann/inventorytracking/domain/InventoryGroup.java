@@ -1,4 +1,4 @@
-package com.jbazann.inventorytracking.model;
+package com.jbazann.inventorytracking.domain;
 
 import java.util.LinkedList;
 import java.util.List;

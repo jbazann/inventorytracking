@@ -1,4 +1,4 @@
-package com.jbazann.inventorytracking.model;
+package com.jbazann.inventorytracking.domain;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

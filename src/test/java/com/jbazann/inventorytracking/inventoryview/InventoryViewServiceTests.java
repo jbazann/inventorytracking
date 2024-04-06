@@ -20,8 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.jbazann.inventorytracking.db.repositories.InventoryGroupRepository;
 import com.jbazann.inventorytracking.db.repositories.InventoryPartRepository;
-import com.jbazann.inventorytracking.model.InventoryGroup;
-import com.jbazann.inventorytracking.model.InventoryGroup.GroupState;
+import com.jbazann.inventorytracking.domain.InventoryGroup;
+import com.jbazann.inventorytracking.domain.InventoryGroup.GroupState;
 import com.jbazann.inventorytracking.ui.inventoryview.InventoryViewItemDTO;
 import com.jbazann.inventorytracking.ui.inventoryview.InventoryViewService;
 
