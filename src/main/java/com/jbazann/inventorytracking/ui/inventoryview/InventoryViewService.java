@@ -62,7 +62,7 @@ public final class InventoryViewService {
             true,
             null,
             group.parts().stream().map(
-                (part) -> part.encodedName()).toList()
+                (part) -> part.id().toString()).toList()
         );
     }
 

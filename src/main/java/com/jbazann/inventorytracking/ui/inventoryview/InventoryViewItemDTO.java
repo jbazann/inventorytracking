@@ -10,5 +10,5 @@ public record InventoryViewItemDTO(
     String state,
     boolean isGroup,
     String date,
-    List<String> partNames
+    List<String> parts
 ) {}

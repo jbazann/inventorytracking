@@ -68,7 +68,7 @@ public class InventoryViewServiceTests {
         assertTrue(result.stream().allMatch(i -> i.state() != null));
         assertTrue(result.stream().allMatch(i -> i.name() != null));
         assertTrue(result.stream().allMatch(i -> i.isGroup()));
-        assertTrue(result.stream().allMatch(i -> i.partNames() != null));
+        assertTrue(result.stream().allMatch(i -> i.parts() != null));
 
         assertTrue(verifyIntegrity(result));
 
@@ -90,7 +90,7 @@ public class InventoryViewServiceTests {
         assertTrue(result.stream().allMatch(i -> i.state() == GroupState.ISSUE.toString()));
         assertTrue(result.stream().allMatch(i -> i.name() != null));
         assertTrue(result.stream().allMatch(i -> i.isGroup()));
-        assertTrue(result.stream().allMatch(i -> i.partNames() != null));
+        assertTrue(result.stream().allMatch(i -> i.parts() != null));
 
         assertTrue(verifyIntegrity(result));
 
