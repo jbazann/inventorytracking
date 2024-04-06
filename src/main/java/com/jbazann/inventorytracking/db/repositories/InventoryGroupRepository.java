@@ -3,10 +3,13 @@ package com.jbazann.inventorytracking.db.repositories;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.stereotype.Repository;
+
 import com.jbazann.inventorytracking.domain.InventoryGroup;
 import com.jbazann.inventorytracking.domain.InventoryPart;// TODO CLEANSE BLASPHEMY 
 import com.jbazann.inventorytracking.domain.InventoryGroup.GroupState;
 
+@Repository
 public class InventoryGroupRepository {
 
     public List<InventoryGroup> getIssues(final int page, final int pageSize) {

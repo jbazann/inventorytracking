@@ -23,6 +23,7 @@ public class HomeController {
 
     private record Filter(String id, String displayText) {}
 
+    //TODO placeholder
     @RequestMapping("/")
     public String home(Model model) {
         model.addAttribute("script", manifest.get("index.js"));
@@ -32,6 +33,8 @@ public class HomeController {
             new Filter("sample-filter-one","Sample Filter 1"),
             new Filter("sample-filter-two", "Sample Filter 2")
         ));
+
+        model.addAttribute("inventory_items", inventoryViewService.getLatestAnyState(0, 5));
 
         return "index";
     }
