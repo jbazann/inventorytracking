@@ -26,7 +26,7 @@ public class HomeController {
     //TODO placeholder
     @RequestMapping("/")
     public String home(Model model) {
-        model.addAttribute("script", manifest.get("index.js"));
+        model.addAttribute("react", manifest.get("react.js"));
         model.addAttribute("stylesheet", manifest.getAt("styles.css","dist/css/"));
 
         model.addAttribute("filters", List.of(

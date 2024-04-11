@@ -13,13 +13,12 @@
                 border-slate-600 overflow-y-scroll">
                 <ol class="contents">
                     <li data-th-each="item : ${inventory_items}" 
-                        id="inventory-item-sample" data-th-id="${#strings.append('li-',item.id)}"
+                        data-th-id="${#strings.append('li#',item.id)}"
                         class="contents"
-                        data-th-attrappend="data-object=${item}"
-                        data-th-insert="~{inventory-item :: inventory-item}">
+                        data-th-attr="data-object=${item.json()}, data-component='inventory-group'">
                     </li>
                 </ol>
             </div>
-        <!--/*/</th-block>/*/-->
+        <!--/*/</th-block>/*/--> 
     </body>
 </html>

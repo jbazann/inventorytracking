@@ -34,9 +34,6 @@ public final class InventoryViewService {
         final List<InventoryViewItemDTO> dtos = new LinkedList<>();
         for(InventoryGroup group : groups) {
             dtos.add(dto(group));
-            for(InventoryPart part : group.parts()) {
-                dtos.add(dto(part));
-            }
         }
         return dtos;
     }
@@ -62,7 +59,7 @@ public final class InventoryViewService {
             true,
             null,
             group.parts().stream().map(
-                (part) -> part.id().toString()).toList()
+                (part) -> dto(part)).toList()
         );
     }
 
