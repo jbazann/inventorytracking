@@ -26,9 +26,7 @@ export default class InventoryGroup extends React.Component {
                     "inv-item-width inv-item-margins overflow-hidden select-none " + 
                     (this.state.displayParts ? "animate-spin " : " ")
                 }
-                onClick={this.clickHandler}
-                ref={this.wrapperRef}
-                tabIndex="-1">
+                onClick={this.clickHandler}>
                 <h2 className="text-center p-1 border-b">
                     {this.state.group.name}
                 </h2>
