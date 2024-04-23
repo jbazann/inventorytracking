@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.jbazann.inventorytracking.domain.InventoryGroup;
@@ -16,6 +17,7 @@ import com.jbazann.inventorytracking.domain.InventoryPart;
 /**
  * Unit tests for {@link InventoryGroup}.
  */
+@Tag("full")
 public class InventoryGroupTests {
 
     final String validName = "A VERY VALID GROUP NAME STRING";

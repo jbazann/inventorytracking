@@ -9,8 +9,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +29,7 @@ import com.jbazann.inventorytracking.ui.inventoryview.InventoryViewService;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(Lifecycle.PER_CLASS)
+@Tag("full")
 public class InventoryViewServiceTests {
 
     @InjectMocks

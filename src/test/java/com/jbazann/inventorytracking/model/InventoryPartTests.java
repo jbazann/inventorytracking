@@ -15,10 +15,12 @@ import org.junit.jupiter.api.Test;
 
 import com.jbazann.inventorytracking.domain.InventoryPart;
 import com.jbazann.inventorytracking.domain.InventoryPart.PartState;
+import org.junit.jupiter.api.Tag;
 
 /**
  * Unit tests for {@link InventoryPart}.
  */
+@Tag("full")
 public class InventoryPartTests {
     final String validName = "Yes Es S FULL LENGTH NAME STRING 130u8!!!!#$%&/() and stuff";
     final String validEncodedName = "YES N4m#-LIK3-!848";
