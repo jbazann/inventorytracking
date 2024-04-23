@@ -83,7 +83,7 @@ public class InventoryPartTests {
         assertEquals(replacing.id(), replaced.id());
         assertEquals(replacing.encodedName(), replaced.encodedName());
         assertThrows(IllegalArgumentException.class, 
-        () -> replacing.replace(null));
+                () -> replacing.replace(null));
     }
 
     @Test
@@ -106,14 +106,14 @@ public class InventoryPartTests {
 
         assertFalse(partOne.is(partOneWrongId));
         assertThrows(RuntimeException.class, 
-        () -> partOne.is(partOneWrongName));
+                () -> partOne.is(partOneWrongName));
         assertThrows(RuntimeException.class, 
-        () -> partOne.is(partOneWrongEncoded));
+                () -> partOne.is(partOneWrongEncoded));
         assertTrue(partOne.is(partOneCopy));
         assertTrue(partOne.is(partOne));
 
         assertThrows(IllegalArgumentException.class, 
-        () -> partOne.is(null));
+                () -> partOne.is(null));
     }
 
     @Test
@@ -130,7 +130,7 @@ public class InventoryPartTests {
         assertFalse(cannotReplace.canReplace(needsReplacement));
         assertFalse(canReplace.canReplace(canReplace));
         assertThrows(IllegalArgumentException.class, 
-        () -> canReplace.canReplace(null));
+                () -> canReplace.canReplace(null));
     }
 
 }

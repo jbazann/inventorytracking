@@ -52,7 +52,7 @@ public record InventoryGroup(
         if(!hasPart(p)) throw new IllegalArgumentException("Part "+p.name()+" is not in this group.");
 
         if(!parts.removeIf(part -> part.is(p)))
-            throw new RuntimeException("The outdated part was missing after it was found. Nice job.");
+            throw new RuntimeException("The outdated part was missing after it was found.");
         parts.add(p);
     }
 

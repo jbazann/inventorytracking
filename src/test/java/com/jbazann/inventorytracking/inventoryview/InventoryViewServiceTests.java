@@ -72,13 +72,13 @@ public class InventoryViewServiceTests {
         assertTrue(verifyIntegrity(result));
 
         assertThrows(IllegalArgumentException.class, 
-        () -> ivs.getLatestAnyState(page, 0));
+                () -> ivs.getLatestAnyState(page, 0));
         assertThrows(IllegalArgumentException.class, 
-        () -> ivs.getLatestAnyState(page, -1));
+                () -> ivs.getLatestAnyState(page, -1));
         assertThrows(IllegalArgumentException.class, 
-        () -> ivs.getLatestAnyState(-1, pageSize));
+                () -> ivs.getLatestAnyState(-1, pageSize));
         assertThrows(IllegalArgumentException.class, 
-        () -> ivs.getLatestAnyState(-1, -1));
+                () -> ivs.getLatestAnyState(-1, -1));
     }
 
     @Test
@@ -94,13 +94,13 @@ public class InventoryViewServiceTests {
         assertTrue(verifyIntegrity(result));
 
         assertThrows(IllegalArgumentException.class, 
-        () -> ivs.getIssues(page, 0));
+                () -> ivs.getIssues(page, 0));
         assertThrows(IllegalArgumentException.class, 
-        () -> ivs.getIssues(page, -1));
+                () -> ivs.getIssues(page, -1));
         assertThrows(IllegalArgumentException.class, 
-        () -> ivs.getIssues(-1, pageSize));
+                () -> ivs.getIssues(-1, pageSize));
         assertThrows(IllegalArgumentException.class, 
-        () -> ivs.getIssues(-1, -1));
+                () -> ivs.getIssues(-1, -1));
     }
 
     /**

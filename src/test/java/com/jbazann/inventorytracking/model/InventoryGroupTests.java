@@ -40,6 +40,7 @@ public class InventoryGroupTests {
         final InventoryPart partThree = mock();
         final InventoryGroup addParts = new InventoryGroup(validName);
 
+        // partOne equivalent to partThree, not to partTwo
         when(partOne.is(partOne)).thenReturn(true);
         when(partOne.is(partTwo)).thenReturn(false);
         when(partOne.is(partThree)).thenReturn(true);
@@ -50,19 +51,23 @@ public class InventoryGroupTests {
         when(partThree.is(partTwo)).thenReturn(false);
         when(partThree.is(partThree)).thenReturn(true);
 
+        // Regular use
         assertEquals(0, addParts.parts().size());
         assertDoesNotThrow(() -> addParts.addPart(partOne));
         assertEquals(1, addParts.parts().size());
         assertTrue(addParts.parts().contains(partOne));
         // Duplicate insertion
-        assertThrows(IllegalArgumentException.class, 
-        () -> addParts.addPart(partOne));
-        assertThrows(IllegalArgumentException.class, 
-        () -> addParts.addPart(partThree));
+        assertThrows(IllegalArgumentException.class,
+                () -> addParts.addPart(partOne));
+        assertThrows(IllegalArgumentException.class,
+                () -> addParts.addPart(partThree));
+        // null insertion
+        assertThrows(IllegalArgumentException.class,
+                () -> addParts.addPart(null));
         // Add one more to check return chain
         assertEquals(addParts, addParts.addPart(partTwo));
         assertEquals(2, addParts.parts().size());
-        assertTrue(addParts.parts().contains(partTwo) 
+        assertTrue(addParts.parts().contains(partTwo)
             && addParts.parts().contains(partOne));
     }
 
@@ -72,6 +77,7 @@ public class InventoryGroupTests {
         final InventoryPart replaceTwo = mock();
         final InventoryPart replacementOne = mock();
         final InventoryPart replacementTwo = mock();
+        final InventoryPart replacementThree = mock();
         final InventoryGroup replaceParts = new InventoryGroup(validName);
 
         when(replaceOne.needsReplacement()).thenReturn(true);
@@ -83,30 +89,41 @@ public class InventoryGroupTests {
         when(replacementOne.canReplace(replaceTwo)).thenReturn(true);// necessary for compatibility check
         // Conditions for unmarked replacement
         when(replacementTwo.canReplace(replacementOne)).thenReturn(true);
-       
+        // Unnecessary conditions for "not contained" replacement
+        when(replacementTwo.needsReplacement()).thenReturn(true);
+        when(replacementThree.canReplace(replacementTwo)).thenReturn(true);
+        // Conditions for incompatible replacement
+        when(replacementThree.canReplace(replaceTwo)).thenReturn(false);
+
         // initialize part list
         replaceParts.addPart(replaceOne).addPart(replaceTwo);
         assertEquals(2, replaceParts.parts().size());
-        
+
         // replace One
         assertDoesNotThrow(() -> replaceParts.replacePart(replaceOne, replacementOne));
         assertEquals(2, replaceParts.parts().size());
         assertTrue(replaceParts.parts().contains(replacementOne));
         assertTrue(replaceParts.parts().contains(replaceTwo));
         assertFalse(replaceParts.parts().contains(replaceOne));
-        
-        // Attempt duplicate replacement
-        assertThrows(IllegalArgumentException.class, 
-        () -> replaceParts.replacePart(replaceTwo, replacementOne));
-        // Attempt unmarked replacement
-        assertThrows(IllegalArgumentException.class, 
-        () -> replaceParts.replacePart(replacementOne, replacementTwo));
+
+        // Duplicate replacement
+        assertThrows(IllegalArgumentException.class,
+                () -> replaceParts.replacePart(replaceTwo, replacementOne));
+        // Unmarked replacement
+        assertThrows(IllegalArgumentException.class,
+                () -> replaceParts.replacePart(replacementOne, replacementTwo));
+        // Not contained
+        assertThrows(IllegalArgumentException.class,
+                () -> replaceParts.replacePart(replacementTwo, replacementThree));
+        // Incompatible replacement
+        assertThrows(RuntimeException.class,
+                () -> replaceParts.replacePart(replaceTwo,replacementThree));
 
         // Null arguments
         assertThrows(IllegalArgumentException.class,
-        () -> replaceParts.replacePart(replaceOne,null));
+                () -> replaceParts.replacePart(replaceOne,null));
         assertThrows(IllegalArgumentException.class,
-        () -> replaceParts.replacePart(null,replaceOne));
+                () -> replaceParts.replacePart(null,replaceOne));
     }
 
     @Test
@@ -126,10 +143,10 @@ public class InventoryGroupTests {
 
         assertEquals(1, updateParts.parts().size());
         assertTrue(updateParts.parts().contains(partStateB));
-        assertThrows(IllegalArgumentException.class, 
-        () -> updateParts.updatePart(wrongPart));
-        assertThrows(IllegalArgumentException.class, 
-        () -> updateParts.updatePart(null));
+        assertThrows(IllegalArgumentException.class,
+                () -> updateParts.updatePart(wrongPart));
+        assertThrows(IllegalArgumentException.class,
+                () -> updateParts.updatePart(null));
     }
 
     @Test
@@ -138,7 +155,7 @@ public class InventoryGroupTests {
         final InventoryPart partTwo = mock();
         final InventoryPart partOneB = mock();
         final InventoryGroup hasPart = new InventoryGroup(validName);
-    
+
         when(partOneA.is(partOneA)).thenReturn(true);
         when(partOneA.is(partOneB)).thenReturn(true);
         when(partOneB.is(partOneA)).thenReturn(true);
@@ -150,13 +167,13 @@ public class InventoryGroupTests {
         assertFalse(hasPart.hasPart(partOneB));
 
         hasPart.addPart(partOneA);
-        
+
         assertTrue(hasPart.hasPart(partOneA));
         assertFalse(hasPart.hasPart(partTwo));
         assertTrue(hasPart.hasPart(partOneB));
 
-        assertThrows(IllegalArgumentException.class, 
-        () -> hasPart.hasPart(null));
+        assertThrows(IllegalArgumentException.class,
+                () -> hasPart.hasPart(null));
     }
 
 }
