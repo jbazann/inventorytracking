@@ -11,11 +11,11 @@ import static org.mockito.Mockito.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.jbazann.inventorytracking.domain.InventoryPart;
 import com.jbazann.inventorytracking.domain.InventoryPart.PartState;
-import org.junit.jupiter.api.Tag;
 
 /**
  * Unit tests for {@link InventoryPart}.
@@ -39,7 +39,7 @@ public class InventoryPartTests {
         assertNotNull(encodedOnly.encodedName());
         assertNotNull(encodedOnly.state());
         assertNotNull(encodedOnly.recorded());
-        assertTrue(encodedOnly.name().equals(validEncodedName));
+        assertEquals(validEncodedName, encodedOnly.name());
 
         // Encoded and full name
         final InventoryPart encodedAndFullName = new InventoryPart(validName,validEncodedName);
@@ -48,8 +48,8 @@ public class InventoryPartTests {
         assertNotNull(encodedAndFullName.encodedName());
         assertNotNull(encodedAndFullName.state());
         assertNotNull(encodedAndFullName.recorded());
-        assertTrue(encodedAndFullName.name().equals(validName));
-        assertTrue(encodedAndFullName.encodedName().equals(validEncodedName));
+        assertEquals(validName, encodedAndFullName.name());
+        assertEquals(validEncodedName, encodedAndFullName.encodedName());
     }
 
     @Test

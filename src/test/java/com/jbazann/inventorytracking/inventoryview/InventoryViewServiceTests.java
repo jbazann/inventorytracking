@@ -4,10 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -53,13 +50,13 @@ public class InventoryViewServiceTests {
             .filter(g -> g.state() == GroupState.ISSUE)
             .toList();
         // prevent IndexOutOfBoundsException
-        final int issuesPageIndex = pageSize > issues.size() ? issues.size() : pageSize;
+        final int issuesPageIndex = Math.min(pageSize, issues.size());
 
         // mock the stuff
         when(igr.getIssues(page, pageSize)).thenReturn(
             issues.subList(0, issuesPageIndex)
         );
-        when(igr.getLatestAnyState(page, pageSize)).thenReturn(db.subList(0, pageSize > db.size() ? db.size() : pageSize));
+        when(igr.getLatestAnyState(page, pageSize)).thenReturn(db.subList(0, Math.min(pageSize, db.size())));
     }
 
     @Test
@@ -69,7 +66,7 @@ public class InventoryViewServiceTests {
         assertTrue(result.stream().allMatch(i -> i.id() != null));
         assertTrue(result.stream().allMatch(i -> i.state() != null));
         assertTrue(result.stream().allMatch(i -> i.name() != null));
-        assertTrue(result.stream().allMatch(i -> i.isGroup()));
+        assertTrue(result.stream().allMatch(InventoryViewItemDTO::isGroup));
         assertTrue(result.stream().allMatch(i -> i.parts() != null));
 
         assertTrue(verifyIntegrity(result));
@@ -89,9 +86,9 @@ public class InventoryViewServiceTests {
         final List <InventoryViewItemDTO> result = ivs.getIssues(page, pageSize);
 
         assertTrue(result.stream().allMatch(i -> i.id() != null));
-        assertTrue(result.stream().allMatch(i -> i.state() == GroupState.ISSUE.toString()));
+        assertTrue(result.stream().allMatch(i -> Objects.equals(i.state(), GroupState.ISSUE.toString())));
         assertTrue(result.stream().allMatch(i -> i.name() != null));
-        assertTrue(result.stream().allMatch(i -> i.isGroup()));
+        assertTrue(result.stream().allMatch(InventoryViewItemDTO::isGroup));
         assertTrue(result.stream().allMatch(i -> i.parts() != null));
 
         assertTrue(verifyIntegrity(result));

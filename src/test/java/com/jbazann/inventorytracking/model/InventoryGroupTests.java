@@ -30,7 +30,7 @@ public class InventoryGroupTests {
         assertNotNull(nameOnly.id());
         assertNotNull(nameOnly.parts());
         assertEquals(0, nameOnly.parts().size());
-        assertTrue(nameOnly.name().equals(validName));
+        assertEquals(validName, nameOnly.name());
     }
 
     @Test
@@ -86,11 +86,11 @@ public class InventoryGroupTests {
        
         // initialize part list
         replaceParts.addPart(replaceOne).addPart(replaceTwo);
-        assertTrue(replaceParts.parts().size() == 2);
+        assertEquals(2, replaceParts.parts().size());
         
         // replace One
         assertDoesNotThrow(() -> replaceParts.replacePart(replaceOne, replacementOne));
-        assertTrue(replaceParts.parts().size() == 2);
+        assertEquals(2, replaceParts.parts().size());
         assertTrue(replaceParts.parts().contains(replacementOne));
         assertTrue(replaceParts.parts().contains(replaceTwo));
         assertFalse(replaceParts.parts().contains(replaceOne));
@@ -124,7 +124,7 @@ public class InventoryGroupTests {
         updateParts.addPart(partStateA);
         updateParts.updatePart(partStateB);
 
-        assertTrue(updateParts.parts().size() == 1);
+        assertEquals(1, updateParts.parts().size());
         assertTrue(updateParts.parts().contains(partStateB));
         assertThrows(IllegalArgumentException.class, 
         () -> updateParts.updatePart(wrongPart));
