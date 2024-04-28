@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.jbazann.inventorytracking.CommonExceptions;
+import jakarta.persistence.*;
 
 /**
  * An {@link InventoryPart} collection that constitutes a deliverable entity. 
@@ -12,11 +13,13 @@ import com.jbazann.inventorytracking.CommonExceptions;
  * the history of events and issues that may occur between the initial dispatch
  * of the parts, and the delivery and successful assembly of the whole.
  */
+@Entity
+@Table(name="inventory_group")
 public record InventoryGroup(
-    UUID id,
-    String name,
-    GroupState state,
-    List<InventoryPart> parts
+    @Column @Id @GeneratedValue UUID id,
+    @Column String name,
+    @Column @Enumerated(EnumType.STRING) GroupState state,
+    @Column @OneToMany List<InventoryPart> parts
 ) {
 
     public enum GroupState {

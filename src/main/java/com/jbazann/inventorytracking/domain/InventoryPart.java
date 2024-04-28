@@ -4,16 +4,19 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.jbazann.inventorytracking.CommonExceptions;
+import jakarta.persistence.*;
 
 /**
  * A tangible tagged unit tracked by the system.
  */
+@Entity
+@Table(name="inventory_part")
 public record InventoryPart(
-    UUID id,
-    String name,
-    String encodedName,
-    PartState state,
-    LocalDateTime recorded
+    @Column @Id @GeneratedValue UUID id,
+    @Column String name,
+    @Column String encodedName,
+    @Column @Enumerated(EnumType.STRING) PartState state,
+    @Column LocalDateTime recorded
 ) {
     
     public enum PartState{ 
