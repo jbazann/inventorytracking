@@ -1,7 +1,5 @@
 package com.jbazann.inventorytracking;
 
-import java.util.Objects;
-
 public abstract class CommonExceptions {
     
     static public IllegalArgumentException nullArgument(String arg) {

@@ -40,15 +40,15 @@ public final class PostgresIntegrationTestData {
         final Random random = new Random();
         final int amount = random.nextInt(maxAmount);
         final List<PartState> states = getConsistentPartStates(groupState, amount != 0 ? amount : 1);
-        states.forEach(state -> {
+        states.forEach(state ->
             parts.add(new InventoryPart(
                     UUID.randomUUID(),
                     UUID.randomUUID().toString(),
                     UUID.randomUUID().toString(),
                     state,
                     LocalDateTime.now()
-            ));
-        });
+            ))
+        );
         return parts;
     }
 
