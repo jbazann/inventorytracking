@@ -10,7 +10,7 @@ import jakarta.persistence.*;
  * A tangible tagged unit tracked by the system.
  */
 @Entity
-@Table(name="inventory_part")
+@Table(name="inventory_part", schema="inventory")
 public record InventoryPart(
     @Column @Id @GeneratedValue UUID id,
     @Column String name,

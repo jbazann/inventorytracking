@@ -3,30 +3,35 @@ package com.jbazann.inventorytracking.ui.inventoryview;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.jbazann.inventorytracking.CommonExceptions;
+import com.jbazann.inventorytracking.db.services.InventoryGroupPersistenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.jbazann.inventorytracking.db.repositories.InventoryGroupRepository;
 import com.jbazann.inventorytracking.domain.InventoryGroup;
 import com.jbazann.inventorytracking.domain.InventoryPart;
 
 @Service
 public final class InventoryViewService {
     
+    private final InventoryGroupPersistenceService groupPersistenceService;
+
     @Autowired
-    private InventoryGroupRepository groupRepository;
+    public InventoryViewService(InventoryGroupPersistenceService groupPersistenceService) {
+        this.groupPersistenceService = groupPersistenceService;
+    }
 
     public List<InventoryViewItemDTO> getLatestAnyState(final int page, final int pageSize) {
-        if(page < 0) throw new IllegalArgumentException("page can't be less than zero.");
-        if(pageSize < 1) throw new IllegalArgumentException("pageSize can't be less than one");
-        final List<InventoryGroup> latest = groupRepository.getLatestAnyState(page,pageSize);
+        if(page < 0) throw CommonExceptions.invalidPage();
+        if(pageSize < 1) throw CommonExceptions.invalidPageSize();
+        final List<InventoryGroup> latest = groupPersistenceService.getLatestAnyState(page,pageSize);
         return dto(latest);
     }
 
     public List<InventoryViewItemDTO> getIssues(final int page, final int pageSize) {
-        if(page < 0) throw new IllegalArgumentException("page can't be less than zero.");
-        if(pageSize < 1) throw new IllegalArgumentException("pageSize can't be less than one");
-        final List<InventoryGroup> issues = groupRepository.getIssues(page,pageSize);
+        if(page < 0) throw CommonExceptions.invalidPage();
+        if(pageSize < 1) throw CommonExceptions.invalidPageSize();
+        final List<InventoryGroup> issues = groupPersistenceService.getLatestIssues(page,pageSize);
         return dto(issues);
     } 
 

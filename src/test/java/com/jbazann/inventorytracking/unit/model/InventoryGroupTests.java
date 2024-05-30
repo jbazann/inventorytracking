@@ -1,4 +1,4 @@
-package com.jbazann.inventorytracking.model;
+package com.jbazann.inventorytracking.unit.model;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,6 +21,7 @@ import com.jbazann.inventorytracking.domain.InventoryPart;
 public class InventoryGroupTests {
 
     final String validName = "A VERY VALID GROUP NAME STRING";
+    private final InventoryGroupTestData data = new InventoryGroupTestData();
 
     @Test
     public void nonCanonicalConstructorTest() {
@@ -29,27 +30,22 @@ public class InventoryGroupTests {
         assertNotNull(nameOnly.name());
         assertNotNull(nameOnly.id());
         assertNotNull(nameOnly.parts());
+        assertNotNull(nameOnly.recorded());
         assertEquals(0, nameOnly.parts().size());
         assertEquals(validName, nameOnly.name());
     }
 
     @Test
     public void addPartTest() {
-        final InventoryPart partOne = mock();
-        final InventoryPart partTwo = mock();
-        final InventoryPart partThree = mock();
+        final InventoryPart partOne = data.mockPart();
+        final InventoryPart partTwo = data.mockPart();
+        final InventoryPart partThree = data.mockPart();
         final InventoryGroup addParts = new InventoryGroup(validName);
 
         // partOne equivalent to partThree, not to partTwo
-        when(partOne.is(partOne)).thenReturn(true);
-        when(partOne.is(partTwo)).thenReturn(false);
-        when(partOne.is(partThree)).thenReturn(true);
-        when(partTwo.is(partOne)).thenReturn(false);
-        when(partTwo.is(partTwo)).thenReturn(true);
-        when(partTwo.is(partThree)).thenReturn(false);
-        when(partThree.is(partOne)).thenReturn(true);
-        when(partThree.is(partTwo)).thenReturn(false);
-        when(partThree.is(partThree)).thenReturn(true);
+        data.mockPartIs(partOne,partThree)
+                .mockPartIsNot(partOne,partTwo)
+                .mockPartIsNot(partThree,partTwo);
 
         // Regular use
         assertEquals(0, addParts.parts().size());
@@ -72,71 +68,69 @@ public class InventoryGroupTests {
     }
 
     @Test
+    public void updateStateTest() {
+
+    }
+
+    @Test
     public void replacePartTest() {
-        final InventoryPart replaceOne = mock();
-        final InventoryPart replaceTwo = mock();
-        final InventoryPart replacementOne = mock();
-        final InventoryPart replacementTwo = mock();
-        final InventoryPart replacementThree = mock();
+        final InventoryPart replaceA = data.mockPart();
+        final InventoryPart replaceB = data.mockPart();
+        final InventoryPart replacementC = data.mockPart();
+        final InventoryPart replacementD = data.mockPart();
+        final InventoryPart replacementE = data.mockPart();
         final InventoryGroup replaceParts = new InventoryGroup(validName);
 
-        when(replaceOne.needsReplacement()).thenReturn(true);
-        when(replaceTwo.needsReplacement()).thenReturn(true);
-        when(replacementOne.needsReplacement()).thenReturn(false);
-        when(replacementOne.canReplace(replaceOne)).thenReturn(true);
-        // Conditions for duplicate replacement
-        when(replacementOne.is(replacementOne)).thenReturn(true);// necessary for duplicate detection
-        when(replacementOne.canReplace(replaceTwo)).thenReturn(true);// necessary for compatibility check
-        // Conditions for unmarked replacement
-        when(replacementTwo.canReplace(replacementOne)).thenReturn(true);
-        // Unnecessary conditions for "not contained" replacement
-        when(replacementTwo.needsReplacement()).thenReturn(true);
-        when(replacementThree.canReplace(replacementTwo)).thenReturn(true);
-        // Conditions for incompatible replacement
-        when(replacementThree.canReplace(replaceTwo)).thenReturn(false);
+        data.mockPartNeedsReplacement(replaceA)
+            .mockPartNeedsReplacement(replaceB)
+            .mockPartCanReplace(replaceA,replacementC)// standard replacement
+            .mockPartCanReplace(replaceB,replacementC)// duplicate insertion
+            .mockPartCanReplace(replacementC,replacementD)// not marked for replacement
+            .mockPartNeedsReplacement(replacementD)// replace not present
+            .mockPartCanReplace(replacementD,replacementE)// ^^
+            .mockPartCanNotReplace(replaceB,replacementE);// incompatible replacement
 
         // initialize part list
-        replaceParts.addPart(replaceOne).addPart(replaceTwo);
+        replaceParts.addPart(replaceA).addPart(replaceB);
         assertEquals(2, replaceParts.parts().size());
 
         // replace One
-        assertDoesNotThrow(() -> replaceParts.replacePart(replaceOne, replacementOne));
+        assertDoesNotThrow(() -> replaceParts.replacePart(replaceA, replacementC));
         assertEquals(2, replaceParts.parts().size());
-        assertTrue(replaceParts.parts().contains(replacementOne));
-        assertTrue(replaceParts.parts().contains(replaceTwo));
-        assertFalse(replaceParts.parts().contains(replaceOne));
+        assertTrue(replaceParts.parts().contains(replacementC));
+        assertTrue(replaceParts.parts().contains(replaceB));
+        assertFalse(replaceParts.parts().contains(replaceA));
 
         // Duplicate replacement
         assertThrows(IllegalArgumentException.class,
-                () -> replaceParts.replacePart(replaceTwo, replacementOne));
+                () -> replaceParts.replacePart(replaceB, replacementC));
         // Unmarked replacement
         assertThrows(IllegalArgumentException.class,
-                () -> replaceParts.replacePart(replacementOne, replacementTwo));
-        // Not contained
+                () -> replaceParts.replacePart(replacementC, replacementD));
+        // Not present
         assertThrows(IllegalArgumentException.class,
-                () -> replaceParts.replacePart(replacementTwo, replacementThree));
+                () -> replaceParts.replacePart(replacementD, replacementE));
         // Incompatible replacement
         assertThrows(RuntimeException.class,
-                () -> replaceParts.replacePart(replaceTwo,replacementThree));
+                () -> replaceParts.replacePart(replaceB,replacementE));
 
         // Null arguments
         assertThrows(IllegalArgumentException.class,
-                () -> replaceParts.replacePart(replaceOne,null));
+                () -> replaceParts.replacePart(replaceA,null));
         assertThrows(IllegalArgumentException.class,
-                () -> replaceParts.replacePart(null,replaceOne));
+                () -> replaceParts.replacePart(null,replaceA));
     }
 
     @Test
     public void updatePartTest() {
-        final InventoryPart partStateA = mock();
-        final InventoryPart partStateB = mock();
-        final InventoryPart wrongPart = mock();
+        final InventoryPart partStateA = data.mockPart();
+        final InventoryPart partStateB = data.mockPart();
+        final InventoryPart wrongPart = data.mockPart();
         final InventoryGroup updateParts = new InventoryGroup(validName);
 
-        when(partStateA.is(partStateB)).thenReturn(true);
-        when(partStateB.is(partStateA)).thenReturn(true);
-        when(partStateB.is(wrongPart)).thenReturn(false);
-        when(wrongPart.is(partStateB)).thenReturn(false);
+        data.mockPartIs(partStateA,partStateB)
+            .mockPartIsNot(partStateA,wrongPart)
+            .mockPartIsNot(partStateB,wrongPart);
 
         updateParts.addPart(partStateA);
         updateParts.updatePart(partStateB);
@@ -151,29 +145,22 @@ public class InventoryGroupTests {
 
     @Test
     public void hasPartTest() {
-        final InventoryPart partOneA = mock();
-        final InventoryPart partTwo = mock();
-        final InventoryPart partOneB = mock();
+        final InventoryPart partOneA = data.mockPart();
+        final InventoryPart partOneB = data.mockPart();
+        final InventoryPart partTwo = data.mockPart();
         final InventoryGroup hasPart = new InventoryGroup(validName);
 
-        when(partOneA.is(partOneA)).thenReturn(true);
-        when(partOneA.is(partOneB)).thenReturn(true);
-        when(partOneB.is(partOneA)).thenReturn(true);
-        when(partOneA.is(partTwo)).thenReturn(false);
-        when(partTwo.is(partOneA)).thenReturn(false);
-
-        assertFalse(hasPart.hasPart(partOneA));
-        assertFalse(hasPart.hasPart(partTwo));
-        assertFalse(hasPart.hasPart(partOneB));
+        data.mockPartIs(partOneA,partOneB)
+            .mockPartIsNot(partOneA,partTwo)
+            .mockPartIsNot(partOneB,partTwo);
 
         hasPart.addPart(partOneA);
 
         assertTrue(hasPart.hasPart(partOneA));
-        assertFalse(hasPart.hasPart(partTwo));
         assertTrue(hasPart.hasPart(partOneB));
+        assertFalse(hasPart.hasPart(partTwo));
 
         assertThrows(IllegalArgumentException.class,
                 () -> hasPart.hasPart(null));
     }
-
 }

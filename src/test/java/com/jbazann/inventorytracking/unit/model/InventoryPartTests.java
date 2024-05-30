@@ -1,4 +1,4 @@
-package com.jbazann.inventorytracking.model;
+package com.jbazann.inventorytracking.unit.model;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;

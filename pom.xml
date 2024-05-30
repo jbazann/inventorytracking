@@ -14,7 +14,13 @@
     <name>inventorytracking</name>
     <description>The InventoryTracking project. A marvel of science and engineering.</description>
     <properties>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
+        <!--disable unnecessary goals from dockerfile-maven-plugin-->
+        <dockerfile.tag.skip>true</dockerfile.tag.skip>
+        <dockerfile.push.skip>true</dockerfile.push.skip>
+        <!--custom values exposed through resource filtering-->
+        <jbazann.postgresimage.tag>latest</jbazann.postgresimage.tag>
+        <jbazann.postgresimage.repo>invtr-postgres</jbazann.postgresimage.repo>
     </properties>
     <dependencies>
         <dependency>
@@ -78,10 +84,57 @@
             <artifactId>postgresql</artifactId>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
+            <plugin>
+                <!--https://github.com/archiecobbs/hibernate-jpa-schemagen-->
+                <groupId>org.dellroad</groupId>
+                <artifactId>hibernate-jpa-schemagen</artifactId>
+                <version>6.4.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-postgres-ddl</id>
+                        <phase>process-classes</phase>
+                        <configuration>
+                            <dialect>org.hibernate.dialect.PostgreSQLDialect</dialect>
+                            <outputFile>${project.basedir}/src/main/resources/postgres/generated/ddl.sql</outputFile>
+                            <verifyFile>${project.basedir}/src/main/resources/postgres/generated/ddl.sql</verifyFile>
+                        </configuration>
+                        <goals>
+                            <goal>export-jpa-schema</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <!--https://github.com/spotify/dockerfile-maven-->
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.4.13</version>
+                <executions>
+                    <execution>
+                        <id>build-postgresql-image</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <configuration>
+                            <repository>${jbazann.postgresimage.repo}</repository>
+                            <tag>${jbazann.postgresimage.tag}</tag>
+                            <contextDirectory>${project.build.directory}/classes/postgres/</contextDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

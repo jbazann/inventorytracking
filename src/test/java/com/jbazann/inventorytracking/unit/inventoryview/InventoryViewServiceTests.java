@@ -1,11 +1,13 @@
-package com.jbazann.inventorytracking.inventoryview;
+package com.jbazann.inventorytracking.unit.inventoryview;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
+import com.jbazann.inventorytracking.db.services.InventoryGroupPersistenceService;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,13 +18,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.jbazann.inventorytracking.db.repositories.InventoryGroupRepository;
-import com.jbazann.inventorytracking.db.repositories.InventoryPartRepository;
 import com.jbazann.inventorytracking.domain.InventoryGroup;
 import com.jbazann.inventorytracking.domain.InventoryGroup.GroupState;
 import com.jbazann.inventorytracking.ui.inventoryview.InventoryViewItemDTO;
 import com.jbazann.inventorytracking.ui.inventoryview.InventoryViewService;
-
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(Lifecycle.PER_CLASS)
@@ -30,11 +29,9 @@ import com.jbazann.inventorytracking.ui.inventoryview.InventoryViewService;
 public class InventoryViewServiceTests {
 
     @InjectMocks
-    private final InventoryViewService ivs = new InventoryViewService();
+    private InventoryViewService ivs;
     @Mock
-    private final InventoryGroupRepository igr = mock();
-    @Mock
-    private final InventoryPartRepository ipr = mock();
+    private final InventoryGroupPersistenceService igps = mock();
     private final List<InventoryGroup> db = new LinkedList<>();
 
     private final int page = 0;
@@ -43,8 +40,9 @@ public class InventoryViewServiceTests {
 
     @BeforeAll
     public void prepareMocks() {
-        // Generate enough groups to fill a page for all filter criteria
-        db.addAll(getTestGroups(5*pageSize*GroupState.values().length));
+        // Generate a bunch of groups (hopefully enough) to fill a page for all filter criteria
+        // Reverse the list because latest first
+        db.addAll(getTestGroups(5*pageSize*GroupState.values().length).reversed());
 
         final List<InventoryGroup> issues = db.stream()
             .filter(g -> g.state() == GroupState.ISSUE)
@@ -53,10 +51,12 @@ public class InventoryViewServiceTests {
         final int issuesPageIndex = Math.min(pageSize, issues.size());
 
         // mock the stuff
-        when(igr.getIssues(page, pageSize)).thenReturn(
-            issues.subList(0, issuesPageIndex)
+        when(igps.getLatestIssues(page,pageSize)).thenReturn(
+                issues.subList(0,issuesPageIndex)
         );
-        when(igr.getLatestAnyState(page, pageSize)).thenReturn(db.subList(0, Math.min(pageSize, db.size())));
+        when(igps.getLatestAnyState(page,pageSize)).thenReturn(
+                db.subList(page,pageSize)
+        );
     }
 
     @Test
@@ -116,7 +116,7 @@ public class InventoryViewServiceTests {
         final List<InventoryGroup> groups = new LinkedList<>();
         final Random rng = new Random();
 
-        for(int i = 0;i >= amount;i++) {
+        for(int i = 0;i <= amount;i++) {
             InventoryGroup g = mock();
             when(g.id()).thenReturn(UUID.randomUUID());
             when(g.name()).thenReturn(UUID.randomUUID().toString());
@@ -125,6 +125,7 @@ public class InventoryViewServiceTests {
                 :   rng.nextInt(3) == 1 ? GroupState.ISSUE
                     : GroupState.TRACKING);
             when(g.parts()).thenReturn(List.of());
+            when(g.recorded()).thenReturn(LocalDateTime.now());
             groups.add(g);
         }
         return groups;   
