@@ -1,16 +1,16 @@
-package com.jbazann.inventorytracking.inventoryview;
+package com.jbazann.inventorytracking.unit.inventoryview;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
 
-import org.junit.jupiter.api.BeforeAll;
+import com.jbazann.inventorytracking.db.services.InventoryGroupPersistenceService;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,24 +18,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.jbazann.inventorytracking.db.repositories.InventoryGroupRepository;
-import com.jbazann.inventorytracking.db.repositories.InventoryPartRepository;
 import com.jbazann.inventorytracking.domain.InventoryGroup;
 import com.jbazann.inventorytracking.domain.InventoryGroup.GroupState;
 import com.jbazann.inventorytracking.ui.inventoryview.InventoryViewItemDTO;
 import com.jbazann.inventorytracking.ui.inventoryview.InventoryViewService;
 
-
 @ExtendWith(MockitoExtension.class)
 @TestInstance(Lifecycle.PER_CLASS)
+@Tag("full")
 public class InventoryViewServiceTests {
 
     @InjectMocks
-    private final InventoryViewService ivs = new InventoryViewService();
+    private InventoryViewService ivs;
     @Mock
-    private final InventoryGroupRepository igr = mock();
-    @Mock
-    private final InventoryPartRepository ipr = mock();
+    private final InventoryGroupPersistenceService igps = mock();
     private final List<InventoryGroup> db = new LinkedList<>();
 
     private final int page = 0;
@@ -44,20 +40,23 @@ public class InventoryViewServiceTests {
 
     @BeforeAll
     public void prepareMocks() {
-        // Generate enough groups to fill a page for all filter criteria
-        db.addAll(getTestGroups(5*pageSize*GroupState.values().length));
+        // Generate a bunch of groups (hopefully enough) to fill a page for all filter criteria
+        // Reverse the list because latest first
+        db.addAll(getTestGroups(5*pageSize*GroupState.values().length).reversed());
 
         final List<InventoryGroup> issues = db.stream()
             .filter(g -> g.state() == GroupState.ISSUE)
             .toList();
         // prevent IndexOutOfBoundsException
-        final int issuesPageIndex = pageSize > issues.size() ? issues.size() : pageSize;
+        final int issuesPageIndex = Math.min(pageSize, issues.size());
 
         // mock the stuff
-        when(igr.getIssues(page, pageSize)).thenReturn(
-            issues.subList(0, issuesPageIndex)
+        when(igps.getLatestIssues(page,pageSize)).thenReturn(
+                issues.subList(0,issuesPageIndex)
         );
-        when(igr.getLatestAnyState(page, pageSize)).thenReturn(db.subList(0, pageSize > db.size() ? db.size() : pageSize));
+        when(igps.getLatestAnyState(page,pageSize)).thenReturn(
+                db.subList(page,pageSize)
+        );
     }
 
     @Test
@@ -67,19 +66,19 @@ public class InventoryViewServiceTests {
         assertTrue(result.stream().allMatch(i -> i.id() != null));
         assertTrue(result.stream().allMatch(i -> i.state() != null));
         assertTrue(result.stream().allMatch(i -> i.name() != null));
-        assertTrue(result.stream().allMatch(i -> i.isGroup()));
+        assertTrue(result.stream().allMatch(InventoryViewItemDTO::isGroup));
         assertTrue(result.stream().allMatch(i -> i.parts() != null));
 
         assertTrue(verifyIntegrity(result));
 
         assertThrows(IllegalArgumentException.class, 
-        () -> ivs.getLatestAnyState(page, 0));
+                () -> ivs.getLatestAnyState(page, 0));
         assertThrows(IllegalArgumentException.class, 
-        () -> ivs.getLatestAnyState(page, -1));
+                () -> ivs.getLatestAnyState(page, -1));
         assertThrows(IllegalArgumentException.class, 
-        () -> ivs.getLatestAnyState(-1, pageSize));
+                () -> ivs.getLatestAnyState(-1, pageSize));
         assertThrows(IllegalArgumentException.class, 
-        () -> ivs.getLatestAnyState(-1, -1));
+                () -> ivs.getLatestAnyState(-1, -1));
     }
 
     @Test
@@ -87,21 +86,21 @@ public class InventoryViewServiceTests {
         final List <InventoryViewItemDTO> result = ivs.getIssues(page, pageSize);
 
         assertTrue(result.stream().allMatch(i -> i.id() != null));
-        assertTrue(result.stream().allMatch(i -> i.state() == GroupState.ISSUE.toString()));
+        assertTrue(result.stream().allMatch(i -> Objects.equals(i.state(), GroupState.ISSUE.toString())));
         assertTrue(result.stream().allMatch(i -> i.name() != null));
-        assertTrue(result.stream().allMatch(i -> i.isGroup()));
+        assertTrue(result.stream().allMatch(InventoryViewItemDTO::isGroup));
         assertTrue(result.stream().allMatch(i -> i.parts() != null));
 
         assertTrue(verifyIntegrity(result));
 
         assertThrows(IllegalArgumentException.class, 
-        () -> ivs.getIssues(page, 0));
+                () -> ivs.getIssues(page, 0));
         assertThrows(IllegalArgumentException.class, 
-        () -> ivs.getIssues(page, -1));
+                () -> ivs.getIssues(page, -1));
         assertThrows(IllegalArgumentException.class, 
-        () -> ivs.getIssues(-1, pageSize));
+                () -> ivs.getIssues(-1, pageSize));
         assertThrows(IllegalArgumentException.class, 
-        () -> ivs.getIssues(-1, -1));
+                () -> ivs.getIssues(-1, -1));
     }
 
     /**
@@ -117,7 +116,7 @@ public class InventoryViewServiceTests {
         final List<InventoryGroup> groups = new LinkedList<>();
         final Random rng = new Random();
 
-        for(int i = 0;i >= amount;i++) {
+        for(int i = 0;i <= amount;i++) {
             InventoryGroup g = mock();
             when(g.id()).thenReturn(UUID.randomUUID());
             when(g.name()).thenReturn(UUID.randomUUID().toString());
@@ -126,6 +125,7 @@ public class InventoryViewServiceTests {
                 :   rng.nextInt(3) == 1 ? GroupState.ISSUE
                     : GroupState.TRACKING);
             when(g.parts()).thenReturn(List.of());
+            when(g.recorded()).thenReturn(LocalDateTime.now());
             groups.add(g);
         }
         return groups;   

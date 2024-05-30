@@ -1,4 +1,4 @@
-package com.jbazann.inventorytracking.model;
+package com.jbazann.inventorytracking.unit.model;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,6 +11,7 @@ import static org.mockito.Mockito.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.jbazann.inventorytracking.domain.InventoryPart;
@@ -19,6 +20,7 @@ import com.jbazann.inventorytracking.domain.InventoryPart.PartState;
 /**
  * Unit tests for {@link InventoryPart}.
  */
+@Tag("full")
 public class InventoryPartTests {
     final String validName = "Yes Es S FULL LENGTH NAME STRING 130u8!!!!#$%&/() and stuff";
     final String validEncodedName = "YES N4m#-LIK3-!848";
@@ -37,7 +39,7 @@ public class InventoryPartTests {
         assertNotNull(encodedOnly.encodedName());
         assertNotNull(encodedOnly.state());
         assertNotNull(encodedOnly.recorded());
-        assertTrue(encodedOnly.name().equals(validEncodedName));
+        assertEquals(validEncodedName, encodedOnly.name());
 
         // Encoded and full name
         final InventoryPart encodedAndFullName = new InventoryPart(validName,validEncodedName);
@@ -46,8 +48,8 @@ public class InventoryPartTests {
         assertNotNull(encodedAndFullName.encodedName());
         assertNotNull(encodedAndFullName.state());
         assertNotNull(encodedAndFullName.recorded());
-        assertTrue(encodedAndFullName.name().equals(validName));
-        assertTrue(encodedAndFullName.encodedName().equals(validEncodedName));
+        assertEquals(validName, encodedAndFullName.name());
+        assertEquals(validEncodedName, encodedAndFullName.encodedName());
     }
 
     @Test
@@ -81,7 +83,7 @@ public class InventoryPartTests {
         assertEquals(replacing.id(), replaced.id());
         assertEquals(replacing.encodedName(), replaced.encodedName());
         assertThrows(IllegalArgumentException.class, 
-        () -> replacing.replace(null));
+                () -> replacing.replace(null));
     }
 
     @Test
@@ -104,14 +106,14 @@ public class InventoryPartTests {
 
         assertFalse(partOne.is(partOneWrongId));
         assertThrows(RuntimeException.class, 
-        () -> partOne.is(partOneWrongName));
+                () -> partOne.is(partOneWrongName));
         assertThrows(RuntimeException.class, 
-        () -> partOne.is(partOneWrongEncoded));
+                () -> partOne.is(partOneWrongEncoded));
         assertTrue(partOne.is(partOneCopy));
         assertTrue(partOne.is(partOne));
 
         assertThrows(IllegalArgumentException.class, 
-        () -> partOne.is(null));
+                () -> partOne.is(null));
     }
 
     @Test
@@ -128,7 +130,7 @@ public class InventoryPartTests {
         assertFalse(cannotReplace.canReplace(needsReplacement));
         assertFalse(canReplace.canReplace(canReplace));
         assertThrows(IllegalArgumentException.class, 
-        () -> canReplace.canReplace(null));
+                () -> canReplace.canReplace(null));
     }
 
 }
